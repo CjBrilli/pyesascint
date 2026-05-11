@@ -44,43 +44,67 @@ def plot_daily_rms_vs_sep(
     daily_df: pd.DataFrame,
     year: str,
     show_tropo: bool = True,
+    sigma_mean: float = 0.015,
+    sigma_amp: float = 0.007,
+    peak_day_south: int = 20,
 ) -> tuple[plt.Figure, tuple]:
     """
-    Plot daily Doppler RMS, smoothed RMS, DSN solar model, and SEP.
+    Plot daily Doppler RMS, smoothed RMS, DSN solar model,
+    seasonal troposphere model, and SEP.
     """
+
+    import numpy as np
+
+    plot_df = daily_df.copy()
+
+    # --------------------------------------------------------
+    # Seasonal troposphere model, southern hemisphere
+    # Units: mm/s
+    # --------------------------------------------------------
+    if show_tropo:
+        doy = plot_df["day"].dt.dayofyear
+
+        plot_df["tropo_seasonal_mm_s"] = (
+            sigma_mean
+            + sigma_amp
+            * np.cos(
+                2 * np.pi * (doy - peak_day_south) / 365.25
+            )
+        )
+
     fig, ax1 = plt.subplots(figsize=(11, 5.5))
 
     ax1.scatter(
-        daily_df["day"],
-        daily_df["doppler_rms_mm_s"],
+        plot_df["day"],
+        plot_df["doppler_rms_mm_s"],
         s=20,
         alpha=0.7,
-        label="Daily RMS Doppler residuals"
+        label="Daily RMS Doppler residuals",
     )
 
-    if "doppler_smooth_mm_s" in daily_df.columns:
+    if "doppler_smooth_mm_s" in plot_df.columns:
         ax1.plot(
-            daily_df["day"],
-            daily_df["doppler_smooth_mm_s"],
+            plot_df["day"],
+            plot_df["doppler_smooth_mm_s"],
             linewidth=2,
-            label="Smoothed Doppler noise"
+            label="Smoothed Doppler noise",
         )
 
-    if "solar_smooth_mm_s" in daily_df.columns:
+    if "solar_smooth_mm_s" in plot_df.columns:
         ax1.plot(
-            daily_df["day"],
-            daily_df["solar_smooth_mm_s"],
+            plot_df["day"],
+            plot_df["solar_smooth_mm_s"],
             linewidth=2,
-            label="DSN solar scintillation model"
+            label="DSN solar scintillation model",
         )
 
-    if show_tropo and "tropo_smooth" in daily_df.columns:
+    if show_tropo:
         ax1.plot(
-            daily_df["day"],
-            daily_df["tropo_smooth"],
-            linewidth=1.5,
+            plot_df["day"],
+            plot_df["tropo_seasonal_mm_s"],
             linestyle="--",
-            label="Measured tropo-derived rate RMS"
+            linewidth=1.8,
+            label="Seasonal troposphere model",
         )
 
     ax1.set_yscale("log")
@@ -89,26 +113,37 @@ def plot_daily_rms_vs_sep(
     ax1.grid(True, alpha=0.3)
 
     ax2 = ax1.twinx()
-    if "elongation_deg" in daily_df.columns:
+
+    if "elongation_deg" in plot_df.columns:
         ax2.plot(
-            daily_df["day"],
-            daily_df["elongation_deg"],
+            plot_df["day"],
+            plot_df["elongation_deg"],
             color="black",
             linewidth=1.5,
-            label="SEP"
+            label="SEP",
         )
+
     ax2.set_ylabel("SEP (deg)")
     ax2.set_ylim(0, 180)
 
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
 
-    ax1.set_title(f"VEX Daily Doppler Noise vs Solar Elongation ({year})")
+    ax1.legend(
+        lines1 + lines2,
+        labels1 + labels2,
+        loc="upper right",
+    )
+
+    ax1.set_title(
+        f"VEX Daily Doppler Noise vs Solar Elongation ({year})"
+    )
+
+    apply_time_axis_format(ax1)
 
     finalize_figure(fig)
-    return fig, (ax1, ax2)
 
+    return fig, (ax1, ax2)
 
 # ============================================================
 # NOTEBOOK 2 — PHASE WINDOWS

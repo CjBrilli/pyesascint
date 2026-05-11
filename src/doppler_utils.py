@@ -374,4 +374,35 @@ def print_daily_summary(daily_df: pd.DataFrame) -> None:
         valid = daily_df["elongation_deg"].dropna()
         if len(valid) > 0:
             print("SEP range (deg):", np.nanmin(valid), "→", np.nanmax(valid))
-            
+
+
+def add_seasonal_troposphere_model(
+    daily_df,
+    amplitude_mm_s,
+    offset_mm_s,
+    phase_day,
+    smooth_days=7,
+):
+    import numpy as np
+
+    out = daily_df.copy()
+
+    out["doy"] = out["day"].dt.dayofyear
+
+    out["tropo_seasonal_mm_s"] = (
+        offset_mm_s
+        + amplitude_mm_s
+        * np.cos(
+            2 * np.pi
+            * (out["doy"] - phase_day)
+            / 365.25
+        )
+    )
+
+    out["tropo_seasonal_smooth_mm_s"] = (
+        out["tropo_seasonal_mm_s"]
+        .rolling(smooth_days, center=True, min_periods=1)
+        .median()
+    )
+
+    return out
