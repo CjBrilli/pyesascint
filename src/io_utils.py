@@ -253,3 +253,64 @@ def print_time_range_summary(
     tmax = df[time_col].max()
     print(f"{name} rows: {len(df)}")
     print(f"{name} time range: {tmin} → {tmax}")
+
+# ============================================================
+# Known degraded tracking interval QC
+# ============================================================
+
+KNOWN_BAD_TRACKING_INTERVALS = {
+    2014: [
+        ("2014-05-20", "2014-05-31"),
+    ],
+}
+
+
+def remove_known_bad_tracking_intervals(
+    df,
+    year,
+    time_col="UTC_time",
+    bad_intervals=None,
+    verbose=True,
+):
+    """
+    Remove known degraded DSN tracking intervals before scintillation processing.
+    """
+
+    year = int(year)   # IMPORTANT: handles YEAR = "2014"
+
+    if bad_intervals is None:
+        bad_intervals = KNOWN_BAD_TRACKING_INTERVALS
+
+    if year not in bad_intervals:
+        if verbose:
+            print(f"[QC] No known bad tracking intervals for {year}")
+        return df.copy()
+
+    out = df.copy()
+    out[time_col] = pd.to_datetime(out[time_col])
+
+    keep_mask = np.ones(len(out), dtype=bool)
+
+    for start, end in bad_intervals[year]:
+        start = pd.Timestamp(start)
+        end = pd.Timestamp(end)
+
+        bad_mask = (
+            (out[time_col] >= start) &
+            (out[time_col] <= end)
+        )
+
+        if verbose:
+            print(
+                f"[QC] Removing {year} bad tracking interval "
+                f"{start.date()} → {end.date()} | rows removed: {bad_mask.sum()}"
+            )
+
+        keep_mask &= ~bad_mask
+
+    out = out.loc[keep_mask].copy()
+
+    if verbose:
+        print(f"[QC] Rows after removal: {len(out)}")
+
+    return out
