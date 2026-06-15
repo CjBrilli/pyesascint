@@ -79,24 +79,26 @@ Transient events are identified via:
 
 
 ```
-ECC/
+pyesascint/
 ├── config/
-├── data_links/
 ├── inputs/
 ├── notebooks/
-│   ├── daily_rms/
-│   ├── phase_scintillation/
-│   ├── detection_pipeline/
-│   └── multi_year_analysis/
+│   ├── 01_doppler_processing.ipynb
+│   ├── 02_cme_detection.ipynb
+│   ├── 03_multi_year_summary.ipynb
+│   ├── 04_candidate_validation.ipynb
+│   ├── 05_pride_comparison.ipynb
+│   └── 06_cactus_validation.ipynb
 ├── src/
 │   ├── io_utils.py
+│   ├── doppler_utils.py
 │   ├── phase_utils.py
+│   ├── detection_utils.py
 │   ├── geometry_utils.py
-│   ├── plot_utils.py
-│   └── detection_utils.py
-├── README.md
-├── LICENSE
-└── .gitignore
+│   ├── pride_transfer_analysis.py
+│   └── plot_utils.py
+├── outputs/
+└── README.md
 ```
 ---
 
