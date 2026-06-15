@@ -1022,6 +1022,11 @@ def plot_year_residuals(fits):
     ax.grid(True, alpha=0.3, axis="y")
 
     plt.tight_layout()
+    plt.savefig(
+    "figure_5_4_transfer_residuals.png",
+    dpi=400,
+    bbox_inches="tight"
+    )
     plt.show()
 
 

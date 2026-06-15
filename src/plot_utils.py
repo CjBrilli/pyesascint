@@ -176,7 +176,7 @@ def plot_phase_scintillation_time_series(
 
 
 # ============================================================
-# NOTEBOOK 3 — BASELINE / DETECTION DIAGNOSTICS
+# NOTEBOOK 2 — BASELINE / DETECTION DIAGNOSTICS
 # ============================================================
 
 def plot_baseline_diagnostics(
@@ -457,7 +457,7 @@ def plot_pipeline_multi_panel(
 
 
 # ============================================================
-# NOTEBOOK 4 — MULTI-YEAR OVERVIEW
+# NOTEBOOK 2 — MULTI-YEAR OVERVIEW
 # ============================================================
 
 def plot_multi_year_summary(
@@ -556,7 +556,7 @@ def plot_multi_year_overview(
     finalize_figure(fig)
     return fig, axes
 # ============================================================
-# NOTEBOOK 5 — CME
+# NOTEBOOK 4 — CME
 # ============================================================
 
 def plot_final_cme_candidates(
@@ -597,7 +597,7 @@ def plot_final_cme_candidates(
 
 
 # ============================================================
-# NOTEBOOK 6 — DSN / PRIDE COMPARISON
+# NOTEBOOK 5 — DSN / PRIDE COMPARISON
 # ============================================================
 
 def plot_xcorr_summary(

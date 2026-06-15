@@ -37,5 +37,5 @@ TROPO_OFFSET = 0.02       # mm/s
 TROPO_PHASE_DAY = 30
 
 NOTES = """
-2011 baseline year.
+2014 baseline year.
 """

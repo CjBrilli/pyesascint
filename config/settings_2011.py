@@ -32,6 +32,10 @@ MIN_SAMPLES = 50
 USE_VALID_FLAG = True
 USE_TROPO_DIAGNOSTIC = True
 
+TROPO_AMP = 0.02          # mm/s
+TROPO_OFFSET = 0.02       # mm/s
+TROPO_PHASE_DAY = 30
+
 NOTES = """
 2011 baseline year.
 """
