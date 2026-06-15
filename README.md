@@ -1,6 +1,6 @@
-# DSN-Based Detection of CIRs and CMEs from Doppler Scintillation
+# ESA-Based Detection of CIRs and CMEs from Doppler Scintillation
 
-This repository implements a complete, reproducible pipeline for detecting solar wind structures — specifically Co-rotating Interaction Regions (CIRs) and Coronal Mass Ejections (CMEs) — using Deep Space Network (DSN) Doppler tracking data of *Venus Express (VEX)*.
+This repository implements a complete, reproducible pipeline for detecting solar wind structures — specifically Co-rotating Interaction Regions (CIRs) and Coronal Mass Ejections (CMEs) — using Deep Space Network (ESA) Doppler tracking data of *Venus Express (VEX)*.
 
 The method uses phase scintillation analysis and a physically motivated normalisation pipeline to isolate heliospheric disturbances from geometric and background effects.
 
@@ -8,7 +8,7 @@ The method uses phase scintillation analysis and a physically motivated normalis
 
 ## Overview
 
-DSN Doppler measurements contain signatures of:
+ESA Doppler measurements contain signatures of:
 
 - Solar wind turbulence (scintillation)  
 - Large-scale structures (CIRs)  
@@ -106,43 +106,41 @@ pyesascint/
 ---
 
 ## Workflow
+### 01_doppler_processing.ipynb
 
-### Notebook 1 — Daily RMS Analysis
-- Computes Doppler RMS per day  
-- Merges with solar elongation  
-- Compares with DSN theoretical model  
+Processes raw Doppler residuals and computes:
 
-### Notebook 2 — Phase Scintillation
-- Converts Doppler to phase  
-- Computes PSD-based phase RMS in sliding windows  
-- Produces `phase_windows_<year>.csv`  
+- Daily Doppler RMS
+- Reconstructed phase fluctuations
+- Phase scintillation metrics
 
-### Notebook 3 — Detection Pipeline
-- Removes elongation dependence  
-- Detects CIR regions  
-- Detects CME-like transients  
-- Produces event catalogues  
+### 02_cme_detection.ipynb
 
-### Notebook 4 — Multi-Year Analysis
-- Compares results across 2010–2014  
-- Generates summary statistics and figures  
+Identifies enhanced scintillation intervals by:
 
-### Notebook 5 — CACTus CME Matching
-- Loads CACTus CME catalogue  
-- Propagates CMEs to line-of-sight geometry  
-- Matches DSN-detected transients to catalogued CMEs  
-- Applies:
-  - radial consistency checks  
-  - angular consistency checks  
-- Produces CME association tables  
+- Removing elongation dependence
+- Detecting CIR regions
+- Identifying transient candidate events
 
-### Notebook 6 — DSN–PRIDE Validation
-- Compares DSN phase scintillation with PRIDE scintillation  
-- Performs:
-  - amplitude correlation analysis  
-  - cross-correlation (lag analysis)  
-- Evaluates consistency across 2010–2014  
-- Includes event-level comparison where PRIDE coverage exists  
+### 03_multi_year_summary.ipynb
+
+Combines yearly results and produces summary statistics and figures.
+
+### 04_candidate_validation.ipynb
+
+Validates transient candidates using:
+
+- Earth–Venus line-of-sight geometry
+- P-point calculations
+- CACTus CME catalogue information
+
+### 05_pride_comparison.ipynb
+
+Performs direct comparison between ESA-derived phase scintillation measurements and PRIDE observations.
+
+### 06_cactus_validation.ipynb
+
+Examines relationships between validated events and external CME catalogues.
 
 ## Key Outputs
 
@@ -152,6 +150,11 @@ pyesascint/
 - CME match table with overlap metrics
 
 ---
+## Scientific Goal
+
+The primary goal of this project is to determine whether phase scintillation measurements derived from ESA Venus Express Doppler tracking data are consistent with independent measurements obtained through the Planetary Radio Interferometry and Doppler Experiment (PRIDE).
+
+If successful, PRIDE observations could provide a complementary source of space-weather information for future planetary missions.
 
 ## Key Parameters
 
@@ -225,7 +228,7 @@ The pipeline is validated by:
 
 ## Key Insight
 
-This method demonstrates that DSN Doppler tracking data contains measurable and separable signatures of solar wind structures, including CMEs.
+This method demonstrates that ESA Doppler tracking data contains measurable and separable signatures of solar wind structures, including CMEs.
 
 ---
 
@@ -241,26 +244,24 @@ This method demonstrates that DSN Doppler tracking data contains measurable and 
 
 ## Usage
 
-1. Select a year in the config file:
+The notebooks are typically run in sequence:
 
-   ```python
-   from config.settings_2011 import *
+1. 01_doppler_processing.ipynb
+2. 02_cme_detection.ipynb
+3. 03_multi_year_summary.ipynb
+4. 04_candidate_validation.ipynb
+5. 05_pride_comparison.ipynb
+6. 06_cactus_validation.ipynb
 
----
+Year-specific parameters are controlled through the files in `config/`.
 ## Author
 
 Caleb
 
-Developed as part of astrophysical data analysis using DSN tracking data of Venus Express.
+Developed as part of astrophysical data analysis using ESA tracking data of Venus Express.
 
 Affiliation: University of Tasmania, Honours Research Project
-Supervisor: Dr. Guifre Moleras
-
-# DSN-Based Detection of CIRs and CMEs from Doppler Scintillation
-
-This repository implements a complete, reproducible pipeline for detecting solar wind structures — specifically Co-rotating Interaction Regions (CIRs) and Coronal Mass Ejections (CMEs) — using Deep Space Network (DSN) Doppler tracking data of *Venus Express (VEX)*.
-
-The method uses phase scintillation analysis and a physically motivated normalisation pipeline to isolate heliospheric disturbances from geometric and background effects.
+Supervisor: Dr. Guifré Molera Calvés
 
 ---
 ## License
